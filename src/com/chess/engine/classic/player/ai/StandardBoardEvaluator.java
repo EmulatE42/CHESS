@@ -34,8 +34,23 @@ public final class StandardBoardEvaluator {
                              final int depth) {
         return mobility(player) +
                 kingThreats(player, depth) +
+                attacks(player) +
                 castle(player) +
                 pieceEvaluations(player);
+    }
+
+    private static int attacks(final Player player) {
+        int attackScore = 0;
+        for(final Move move : player.getLegalMoves()) {
+            if(move.isAttack()) {
+                final Piece movedPiece = move.getMovedPiece();
+                final Piece attackedPiece = move.getAttackedPiece();
+                if(movedPiece.getPieceValue() <= attackedPiece.getPieceValue()) {
+                    attackScore ++;
+                }
+            }
+        }
+        return attackScore * ATTACK_MULTIPLIER;
     }
 
     private static int pieceEvaluations(final Player player) {
